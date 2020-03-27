@@ -1,0 +1,73 @@
+Assessment 1- Help Desk
+
+Solution:
+
+Easy Questions-
+1. select call_date from Issue where Detail like '%index%' and Detail like '%Oracle%'
+
+2. select call_date, first_name, last_name from Issue JOIN Caller
+ON(Issue.Caller_id=Caller.Caller_id)
+where call_date like '2017-08-14%' and first_name = 'samantha' and last_name = 'Hall'
+
+3. select Count(Caller_id), status from Issue group by(status) 
+
+4. select count(call_ref) as mlcc from Issue JOIN Staff ON(assigned_to = staff_code) where level_code>3
+
+5. select shift_date, shift_type, first_name, last_name from Shift, Staff where  Manager = Staff_code
+
+Medium Questions-
+6. SELECT
+	Customer.Company_name,
+	COUNT(*)
+FROM
+	Customer
+	JOIN
+		Caller
+		ON (Customer.Company_ref = Caller.Company_ref)
+	JOIN
+		Issue
+		ON (Caller.Caller_id = Issue.Caller_id)
+GROUP BY
+	Customer.Company_name
+HAVING
+	COUNT(*) > 18;
+
+7. select first_name,last_name from Caller LEFT JOIN Issue ON(Caller.caller_id=Issue.caller_id)
+	where Issue.caller_id IS null
+
+8. select first_name,last_name from Caller LEFT JOIN Issue ON(Caller.caller_id=Issue.caller_id)
+	where Issue.caller_id IS null
+
+9. select shift_date, shift_type, count(Staff_code) from Shift, Staff where Manager=Staff_code or Operator = Staff_code or Engineer1=Staff_code or Engineer2=Staff_code
+	group by Shift_type, 
+         Shift_date	
+10. select first_name, last_name, call_date from Caller, Issue where call_date IN (Select max(call_date) from Issue) and first_name = 'Harry'
+
+Difficult Questions-
+11. select Manager, i.date_hour as hr, count(*) from 
+(
+		SELECT
+			DATE_FORMAT(call_date, '%Y-%m-%d %H') date_hour,
+			DATE_FORMAT(call_date, '%Y-%m-%d') date,
+			DATE_FORMAT(call_date, '%H') hour,
+			Taken_by
+			from Issue
+			 where Call_date like '2017-08-12%') as i
+			JOIN
+			Shift ON (i.date = Shift.Shift_date)
+			group by Shift.manager, i.date_hour
+			order by i.date_hour		 
+
+13. SELECT Customer.company_name, COUNT(*) AS notang
+	FROM Issue JOIN Caller ON Issue.caller_id = Caller.caller_id
+	  JOIN Customer ON Caller.company_ref = Customer.company_ref
+	WHERE Customer.company_name NOT IN
+	(SELECT Customer.company_name
+	FROM Customer JOIN Caller ON Customer.company_ref = Caller.company_ref
+	  JOIN Issue ON Caller.caller_id = Issue.caller_id
+	WHERE DATE_FORMAT(Issue.call_date, '%H:%i') BETWEEN '13:55' AND '14:00'
+	  OR DATE_FORMAT(Issue.call_date, '%H:%i') BETWEEN '19:55' AND '20:00'
+	)
+	GROUP BY Customer.company_name
+	ORDER BY COUNT(*) DESC
+	LIMIT 1;
