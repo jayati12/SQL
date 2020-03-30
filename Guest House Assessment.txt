@@ -1,0 +1,45 @@
+Guest House Assessment
+
+1. SELECT booking_date, nights from booking 
+where guest_id = 1183
+
+2. select arrival_time, first_name, last_name from booking JOIN guest
+ON(guest_id=id)
+where booking_date = '2016-11-05'
+order by arrival_time
+
+3. select booking_id, room_type_requested, occupants, amount from rate
+join booking on(room_type=room_type_requested and occupancy=occupants)
+where booking_id IN(5152, 5165, 5154, 5295)
+
+4. select first_name, last_name, address from guest JOIN booking
+on(id=guest_id)
+where room_no = 101 and booking_date='2016-12-03'
+
+5. select guest_id, count(booking_id), sum(nights)
+from booking
+where guest_id IN(1185, 1270)
+group by(guest_id)
+
+6. SELECT SUM(nights*amount) from rate join booking
+on(room_type =room_type_requested and occupancy=occupants) join
+guest on(booking.guest_id=guest.id)
+where first_name = 'Ruth' and last_name = 'Cadbury'
+
+7. select sum(rate.amount*booking.nights + extra.amount) FROM rate join booking
+on(room_type =room_type_requested and occupancy=occupants)
+ join extra on(booking.booking_id=extra.booking_id) 
+where extra.booking_id=5346
+
+9. select booking_date, count(booking_id) as arrivas from booking 
+where booking_date between '2016-11-25' and '2016-12-01'
+group by(booking_date)
+order by booking_date asc
+
+10. SELECT
+	SUM(occupants)
+FROM
+	booking
+WHERE
+	booking_date <= '2016-11-21'
+	AND DATE_ADD(booking_date, INTERVAL nights DAY) > '2016-11-21'
