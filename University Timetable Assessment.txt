@@ -1,0 +1,99 @@
+
+ University Timetables
+
+1. SELECT event.room
+FROM event
+WHERE
+  event.id = 'co42010.L01';
+
+2. SELECT event.dow, event.tod, event.room
+FROM
+  event
+WHERE
+  event.modle = 'co72010';
+
+3. SELECT DISTINCT staff.name
+FROM staff
+  JOIN
+    teaches
+    ON staff.id = teaches.staff
+  JOIN
+    event
+    ON teaches.event = event.id
+WHERE
+  event.modle = 'co72010';
+
+4. SELECT staff.name, event.modle, event.tod
+FROM
+  staff
+  JOIN
+    teaches
+    ON staff.id = teaches.staff
+  JOIN
+    event
+    ON teaches.event = event.id
+WHERE
+  event.room = 'cr.132'
+  AND event.dow = 'Wednesday';
+
+5. SELECT student.name
+FROM student
+  JOIN attends
+    ON student.id = attends.student
+  JOIN event
+    ON attends.event = event.id
+  JOIN modle
+    ON event.modle = modle.id
+WHERE
+  LOWER(modle.name) LIKE LOWER('%database%');
+
+
+6. SELECT event.id,
+  SUM(student.sze)
+FROM student
+  JOIN attends
+    ON student.id = attends.student
+  JOIN event
+    ON attends.event = event.id
+WHERE
+  event.modle = 'co72010'
+GROUP BY
+  event.id;
+
+7. SELECT
+  COUNT(DISTINCT staff.id),
+  event.modle
+FROM staff
+  JOIN teaches
+    ON staff.id = teaches.staff
+  JOIN event
+    ON teaches.event = event.id
+WHERE
+  event.modle LIKE 'co7%'
+GROUP BY
+  event.modle;
+
+8. SELECT DISTINCT modle.name
+FROM modle
+  JOIN event
+    ON event.modle = modle.id
+  JOIN occurs
+    ON event.id = occurs.event
+GROUP BY event.id, modle.name
+HAVING
+  COUNT(occurs.week) < 10
+
+9. SELECT event.id
+FROM event
+WHERE CONCAT(event.dow, event.tod) IN
+    (
+      SELECT
+        CONCAT(event.dow, event.tod)
+      FROM
+        event
+      WHERE
+        event.modle = 'co72010'
+    )
+
+
+
